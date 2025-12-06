@@ -1,0 +1,8 @@
+# Ignore Visual Studio files
+.vs/
+
+# Node.js dependencies
+node_modules/
+
+# Logs
+npm-debug.log
