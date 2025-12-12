@@ -47,17 +47,31 @@ function generateZegoToken(appID, userID, expireSeconds = 3600) {
 // HTTP 接口：GET /get_token?userID=xxx[&expire=3600]
 app.get('/get_token', (req, res) => {
     try {
-        const { userID, expire } = req.query;
+        const { userID, roomID, expire } = req.query;
         if (!userID) return res.status(400).json({ error: 'Missing userID' });
         if (!APP_ID || !SERVER_SECRET) return res.status(500).json({ error: 'Server not configured' });
 
-        const token = generateZegoToken(APP_ID, userID, expire ? Number(expire) : 3600);
-        return res.json({ appID: APP_ID, token });
+        const payloadObj = {
+            app_id: APP_ID, user_id: String(userID), nonce: Math.floor(Math.random() * 1e9),
+            ctime: Math.floor(Date.now() / 1000),
+            expire: Number(expire || 3600),
+            room_id: roomID
+        };
+
+        const key = crypto.createHash('sha256').update(String(SERVER_SECRET), 'utf8').digest();
+        const iv = crypto.randomBytes(16);
+        const cipher = crypto.createCipheriv('aes-256-cbc', key, iv);
+        let encrypted = cipher.update(JSON.stringify(payloadObj), 'utf8', 'base64');
+        encrypted += cipher.final('base64');
+        const tokenBuf = Buffer.concat([iv, Buffer.from(encrypted, 'base64')]);
+
+        return res.json({ appID: APP_ID, token: tokenBuf.toString('base64'), roomID });
     } catch (err) {
         console.error('generate token error:', err);
         return res.status(500).json({ error: 'token generation failed' });
     }
 });
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
