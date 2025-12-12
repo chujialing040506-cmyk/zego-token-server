@@ -1,7 +1,7 @@
 {
   "name": "zegotokenserver",
   "version": "1.0.0",
-  "description": "",
+  "description": "Zego Token Server for ITEC Doctor App",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -12,6 +12,15 @@
   "type": "commonjs",
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
     "express": "^5.2.1"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chujialing040506-cmyk/zego-token-server.git"
+  },
+  "bugs": {
+    "url": "https://github.com/chujialing040506-cmyk/zego-token-server/issues"
+  },
+  "homepage": "https://github.com/chujialing040506-cmyk/zego-token-server#readme"
 }
